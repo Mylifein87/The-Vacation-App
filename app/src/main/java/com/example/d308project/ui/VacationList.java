@@ -73,8 +73,6 @@ private Repository repository;
             repository.insert(excursion);
             excursion= new Excursion(vacationID: 0, excursionName: "Bus Tour", price: 25.0 );
             repository.insert(excursion);
-            excursion= new Excursion(vacationID: 0, excursionName: "Bus Tour", price: 25.0 );
-            repository.insert(excursion);
             excursion= new Excursion(vacationID: 0, excursionName: "Cooking Lesson", price: 50.0 );
             repository.insert(excursion);
 
