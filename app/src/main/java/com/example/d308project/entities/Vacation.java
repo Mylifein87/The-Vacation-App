@@ -1,25 +1,35 @@
 package com.example.d308project.entities;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.Ignore;
 
 @Entity(tableName = "vacations")
 public class Vacation {
 
     @PrimaryKey(autoGenerate = true)
     private int vacationID;
+    private String title;
+    private String hotel;
+    private String startDate;
+    private String endDate;
 
-    private String vacationName;
-    private double price;
+
+    public Vacation() {}
 
 
-    public Vacation(String vacationName, double price) {
-        this.vacationName = vacationName;
-        this.price = price;
+    @Ignore
+    public Vacation(String title, String hotel, String startDate, String endDate) {
+        this.title = title;
+        this.hotel = hotel;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
-
-    public Vacation() {
+    public Vacation(String bermuda, double v) {
     }
+
+    // GETTERS & SETTERS
 
     public int getVacationID() {
         return vacationID;
@@ -29,19 +39,34 @@ public class Vacation {
         this.vacationID = vacationID;
     }
 
-    public String getVacationName() {
-        return vacationName;
+    public String getTitle() {
+        return title;
     }
 
-    public void setVacationName(String vacationName) {
-        this.vacationName = vacationName;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public double getPrice() {
-        return price;
+    public String getHotel() {
+        return hotel;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setHotel(String hotel) {
+        this.hotel = hotel;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 }

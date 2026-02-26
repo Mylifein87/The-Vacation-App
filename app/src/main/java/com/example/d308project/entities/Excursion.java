@@ -1,29 +1,55 @@
 package com.example.d308project.entities;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+import androidx.room.Ignore;
+import androidx.room.ForeignKey;
 
+import static androidx.room.ForeignKey.NO_ACTION;
 
-@Entity(tableName="excursions")
+@Entity(
+        tableName = "excursions",
+        foreignKeys = @ForeignKey(
+                entity = Vacation.class,
+                parentColumns = "vacationID",
+                childColumns = "vacationID",
+                onDelete = NO_ACTION
+        )
+)
 public class Excursion {
+
     @PrimaryKey(autoGenerate = true)
-    private int excursionID;
+    private int excursionId;
+
+    private int vacationID;
     private String excursionName;
     private double price;
 
+    public Excursion() {}
 
-    public Excursion(String excursionName, double price) {
-
+    @Ignore
+    public Excursion(int vacationID, String excursionName, double price) {
+        this.vacationID = vacationID;
         this.excursionName = excursionName;
         this.price = price;
-
     }
 
-    public int getExcursionID() {
-        return excursionID;
+    // GETTERS & SETTERS
+
+    public int getExcursionId() {
+        return excursionId;
     }
 
-    public void setExcursionID(int excursionID) {
-        this.excursionID = excursionID;
+    public void setExcursionId(int excursionId) {
+        this.excursionId = excursionId;
+    }
+
+    public int getVacationID() {
+        return vacationID;
+    }
+
+    public void setVacationID(int vacationID) {
+        this.vacationID = vacationID;
     }
 
     public String getExcursionName() {

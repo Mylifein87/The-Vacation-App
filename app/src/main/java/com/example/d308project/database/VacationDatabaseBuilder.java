@@ -20,7 +20,7 @@ public abstract class VacationDatabaseBuilder extends RoomDatabase  {
 
     private static volatile VacationDatabaseBuilder INSTANCE;
 
-    static VacationDatabaseBuilder getDatabase(final Context context){
+    public static VacationDatabaseBuilder getDatabase(final Context context){
         if(INSTANCE==null){
             synchronized (VacationDatabaseBuilder.class){
                 if(INSTANCE==null){

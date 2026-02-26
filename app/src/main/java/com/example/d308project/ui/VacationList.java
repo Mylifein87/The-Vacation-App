@@ -14,9 +14,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.d308project.R;
+import com.example.d308project.database.Repository;
+import com.example.d308project.database.VacationDatabaseBuilder;
+import com.example.d308project.entities.Excursion;
+import com.example.d308project.entities.Vacation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class VacationList extends AppCompatActivity {
+private Repository repository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +56,36 @@ public class VacationList extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.sample) {
-            Toast.makeText(VacationList.this, "put in sample data", Toast.LENGTH_LONG).show();
+
+            repository=new Repository(getApplication());
+
+            Vacation vacation=new Vacation("Bermuda Trip", 2000.0);
+            repository.insert(vacation);
+            vacation=new Vacation("London Trip", 4000.0);
+            repository.insert(vacation);
+            vacation=new Vacation("Spring Break", 1700.0);
+            repository.insert(vacation);
+
+
+            Excursion excursion= new Excursion(vacationID: 0, excursionName: "Snorkeling", price: 100.0 );
+            repository.insert(excursion);
+            excursion= new Excursion(vacationID: 0, excursionName: "Hiking", price: 15.0 );
+            repository.insert(excursion);
+            excursion= new Excursion(vacationID: 0, excursionName: "Bus Tour", price: 25.0 );
+            repository.insert(excursion);
+            excursion= new Excursion(vacationID: 0, excursionName: "Bus Tour", price: 25.0 );
+            repository.insert(excursion);
+            excursion= new Excursion(vacationID: 0, excursionName: "Cooking Lesson", price: 50.0 );
+            repository.insert(excursion);
+
+
+
+
+
+            VacationDatabaseBuilder db = VacationDatabaseBuilder.getDatabase(this);
+
+
+
             return true;
         }
         if (item.getItemId() == android.R.id.home) {
