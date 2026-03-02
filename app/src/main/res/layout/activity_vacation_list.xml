@@ -5,70 +5,60 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.d308project.ui.VacationList">
+    tools:context=".UI.VacationList">
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#F5F5DC"
+        app:layout_constraintBottom_toTopOf="@+id/textAddVacation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="10dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/vacationRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent" />
+        </LinearLayout>
+    </ScrollView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
         android:clickable="true"
-        app:srcCompat="@drawable/baseline_add_24"
-        tools:layout_editor_absoluteX="339dp"
-        tools:layout_editor_absoluteY="678dp" />
-
-    <ScrollView
-        android:layout_width="409dp"
-        android:layout_height="200dp"
-        android:background="#9FA8DA"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" />
-    </ScrollView>
-
-    <TextView
-        android:id="@+id/textBermuda"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bermuda Trip"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.97"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="10dp"
-        android:layout_marginTop="24dp"/>
-
-    <TextView
-        android:id="@+id/textLondon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="London Trip"
-        app:layout_constraintTop_toBottomOf="@id/textBermuda"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="10dp"
-        android:layout_marginTop="16dp"/>
-
-    <TextView
-        android:id="@+id/textSpring"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Spring Break"
-        app:layout_constraintTop_toBottomOf="@id/textLondon"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:padding="10dp"
-        android:layout_marginTop="16dp"/>
+        app:layout_constraintVertical_bias="0.97"
+        app:srcCompat="@android:drawable/ic_input_add" />
 
     <EditText
-        android:id="@+id/titleText"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        app:layout_constraintTop_toBottomOf="@id/textLondon"
+        android:id="@+id/textAddVacation"
+        android:gravity="right"
+        android:layout_width="135dp"
+        android:layout_height="60dp"
+        android:ems="10"
+        android:inputType="text"
+        android:text="Add vacation"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/floatingActionButton"
+        app:layout_constraintHorizontal_bias="0.9"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="second"></EditText>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.97" />
 </androidx.constraintlayout.widget.ConstraintLayout>

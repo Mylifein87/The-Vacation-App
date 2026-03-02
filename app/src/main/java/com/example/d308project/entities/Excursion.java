@@ -1,6 +1,7 @@
 package com.example.d308project.entities;
 
 import androidx.room.Entity;
+import androidx.room.Index;
 import androidx.room.PrimaryKey;
 import androidx.room.Ignore;
 import androidx.room.ForeignKey;
@@ -13,8 +14,9 @@ import static androidx.room.ForeignKey.NO_ACTION;
                 entity = Vacation.class,
                 parentColumns = "vacationID",
                 childColumns = "vacationID",
-                onDelete = NO_ACTION
-        )
+                onDelete = ForeignKey.CASCADE
+        ),
+        indices = {@Index("vacationID")}
 )
 public class Excursion {
 
@@ -23,15 +25,15 @@ public class Excursion {
 
     private int vacationID;
     private String excursionName;
-    private double price;
+    private String excursionDate;
 
     public Excursion() {}
 
     @Ignore
-    public Excursion(int vacationID, String excursionName, double price) {
-        this.vacationID = vacationID;
+    public Excursion(String excursionName, String excursionDate, int vacationID) {
         this.excursionName = excursionName;
-        this.price = price;
+        this.excursionDate = excursionDate;
+        this.vacationID = vacationID;
     }
 
     // GETTERS & SETTERS
@@ -60,11 +62,11 @@ public class Excursion {
         this.excursionName = excursionName;
     }
 
-    public double getPrice() {
-        return price;
+    public String getExcursionDate() {
+        return excursionDate;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setExcursionDate(String excursionDate) {
+        this.excursionDate = excursionDate;
     }
 }

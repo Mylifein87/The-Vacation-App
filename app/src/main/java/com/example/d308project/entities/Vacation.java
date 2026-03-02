@@ -26,8 +26,6 @@ public class Vacation {
         this.endDate = endDate;
     }
 
-    public Vacation(String bermuda, double v) {
-    }
 
     // GETTERS & SETTERS
 

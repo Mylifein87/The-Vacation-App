@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.d308project.R;
 import com.example.d308project.database.Repository;
@@ -38,7 +39,9 @@ private Repository repository;
 
         });
 
-        System.out.println(getIntent().getStringExtra("test"));
+        RecyclerView recyclerView=findViewById(R.id.VacationListRecyclerView);
+
+        //System.out.println(getIntent().getStringExtra("test"));
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -59,33 +62,69 @@ private Repository repository;
 
             repository=new Repository(getApplication());
 
-            Vacation vacation=new Vacation("Bermuda Trip", 2000.0);
-            repository.insert(vacation);
-            vacation=new Vacation("London Trip", 4000.0);
-            repository.insert(vacation);
-            vacation=new Vacation("Spring Break", 1700.0);
-            repository.insert(vacation);
+            Vacation v1 = new Vacation(
+                    "Bermuda Trip",
+                    "Hilton Bermuda",
+                    "06/01/2026",
+                    "06/10/2026"
+            );
+            repository.insert(v1);
+
+            Vacation v2 = new Vacation(
+                    "London Trip",
+                    "The Savoy",
+                    "07/15/2026",
+                    "07/25/2026"
+            );
+            repository.insert(v2);
+
+            Vacation v3 = new Vacation(
+                    "Spring Break",
+                    "Miami Beach Resort",
+                    "03/10/2026",
+                    "03/17/2026"
+            );
+            repository.insert(v3);
 
 
-            Excursion excursion= new Excursion(vacationID: 0, excursionName: "Snorkeling", price: 100.0 );
-            repository.insert(excursion);
-            excursion= new Excursion(vacationID: 0, excursionName: "Hiking", price: 15.0 );
-            repository.insert(excursion);
-            excursion= new Excursion(vacationID: 0, excursionName: "Bus Tour", price: 25.0 );
-            repository.insert(excursion);
-            excursion= new Excursion(vacationID: 0, excursionName: "Cooking Lesson", price: 50.0 );
-            repository.insert(excursion);
+            for (Vacation vacation : repository.getAllVacations()) {
 
+                if (vacation.getTitle().equals("Bermuda Trip")) {
 
+                    repository.insert(new Excursion(
+                            "Snorkeling",
+                            "06/03/2026",
+                            vacation.getVacationID()
+                    ));
 
+                    repository.insert(new Excursion(
+                            "Hiking",
+                            "06/05/2026",
+                            vacation.getVacationID()
+                    ));
+                }
 
+                if (vacation.getTitle().equals("London Trip")) {
 
-            VacationDatabaseBuilder db = VacationDatabaseBuilder.getDatabase(this);
+                    repository.insert(new Excursion(
+                            "Bus Tour",
+                            "07/18/2026",
+                            vacation.getVacationID()
+                    ));
 
+                    repository.insert(new Excursion(
+                            "Cooking Lesson",
+                            "07/20/2026",
+                            vacation.getVacationID()
+                    ));
+                }
+            }
 
+            Toast.makeText(this, "Sample data added!", Toast.LENGTH_LONG).show();
 
             return true;
         }
+
         if (item.getItemId() == android.R.id.home) {
             this.finish();
             return true;

@@ -14,6 +14,7 @@ import java.util.List;
 
 @Dao
 public interface ExcursionDAO {
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Excursion excursion);
 
@@ -23,8 +24,12 @@ public interface ExcursionDAO {
     @Delete
     void delete(Excursion excursion);
 
-    @Query("SELECT * FROM EXCURSIONS ORDER BY excursionID ASC")
-    List<Excursion> getAllExcursions();
+    @Query("SELECT * FROM excursions WHERE excursionId = :id")
+    Excursion getExcursionById(int id);
 
+    @Query("SELECT * FROM excursions WHERE vacationID = :vacationID")
     List<Excursion> getAssociatedExcursions(int vacationID);
+
+    @Query("SELECT * FROM excursions ORDER BY excursionId ASC")
+    List<Excursion> getAllExcursions();
 }

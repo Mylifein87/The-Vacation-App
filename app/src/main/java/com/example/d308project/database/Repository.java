@@ -150,5 +150,9 @@ public class Repository {
         }
         return null;
     }
+
+    public Vacation[] getAllVacations() {
+        return getAllVacations();
+    }
 }
 
