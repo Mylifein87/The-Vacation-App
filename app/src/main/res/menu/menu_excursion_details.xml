@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/excursionrefresh"
+        android:title="Refresh" />
+    <item
+        android:id="@+id/excursionsave"
+        android:title="Save Excursion" />
+    <item
+        android:id="@+id/excursiondelete"
+        android:title="Delete Excursion" />
+    <item
+        android:id="@+id/excursionnotify"
+        android:title="Notify Excursion" />
+    <item
+        android:id="@+id/excursionshare"
+        android:title="Share Note" />
+</menu>

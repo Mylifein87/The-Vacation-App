@@ -39,7 +39,7 @@ private Repository repository;
 
         });
 
-        RecyclerView recyclerView=findViewById(R.id.VacationListRecyclerView);
+        RecyclerView recyclerView = findViewById(R.id.vacationRecyclerView);
 
         //System.out.println(getIntent().getStringExtra("test"));
 
