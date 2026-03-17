@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
@@ -7,21 +8,23 @@
     android:layout_height="match_parent"
     tools:context=".ui.VacationDetails">
 
+    <!-- Top Scroll Section -->
     <ScrollView
         android:id="@+id/scrollview1"
-        android:layout_width="415dp"
-        android:layout_height="300dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:background="#9FA8DA"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="16dp">
 
+            <!-- Vacation Title -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -29,152 +32,128 @@
 
                 <TextView
                     android:id="@+id/textName"
-                    android:layout_width="100dp"
-                    android:layout_height="50dp"
-                    android:text="Title: "
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="Title:"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
                 <EditText
                     android:id="@+id/textNameId"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:hint="Vacation Title" />
+                    android:layout_height="wrap_content"
+                    android:hint="Vacation Title"/>
             </LinearLayout>
 
+            <!-- Vacation Price -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
 
                 <TextView
                     android:id="@+id/textPrice"
-                    android:layout_width="100dp"
-                    android:layout_height="50dp"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
                     android:text="Price: $"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
                 <EditText
                     android:id="@+id/textPriceId"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:hint="Vacation Cost" />
+                    android:layout_height="wrap_content"
+                    android:hint="Vacation Cost"
+                    android:inputType="numberDecimal"/>
             </LinearLayout>
 
+            <!-- Vacation Hotel -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
 
                 <TextView
                     android:id="@+id/textHotel"
-                    android:layout_width="100dp"
-                    android:layout_height="50dp"
-                    android:text="Hotel: "
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="Hotel:"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
                 <EditText
                     android:id="@+id/textHotelId"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:hint="Vacation Hotel" />
+                    android:layout_height="wrap_content"
+                    android:hint="Vacation Hotel"/>
             </LinearLayout>
 
+            <!-- Start Date -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="12dp"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/textStartDate"
-                    android:layout_width="300dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="Start Date: "
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="Start Date:"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
                 <Button
                     android:id="@+id/buttonVacationDateStart"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:text="mm/dd/yyyy" />
+                    android:layout_height="wrap_content"
+                    android:text="mm/dd/yy"/>
             </LinearLayout>
 
+            <!-- End Date -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/textEndDate"
-                    android:layout_width="300dp"
-                    android:layout_height="50dp"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="End Date: "
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:text="End Date:"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"/>
 
                 <Button
                     android:id="@+id/buttonVacationDateEnd"
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:text="mm/dd/yyyy" />
+                    android:layout_height="wrap_content"
+                    android:text="mm/dd/yy"/>
             </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
 
+    <!-- Excursion RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/excursionRecyclerView"
-        android:layout_width="400dp"
-        android:layout_height="330dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/scrollview1" />
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/scrollview1"
+        app:layout_constraintBottom_toTopOf="@id/floatingActionButton2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:padding="10dp"/>
 
+    <!-- Floating Button to Add Excursion -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:clickable="true"
+        android:layout_margin="20dp"
+        app:srcCompat="@android:drawable/ic_input_add"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/scrollview1"
-        app:layout_constraintVertical_bias="0.97"
-        app:srcCompat="@android:drawable/ic_input_add" />
-
-    <EditText
-        android:id="@+id/textAddExcursion"
-        android:layout_width="150dp"
-        android:layout_height="60dp"
-        android:ems="10"
-        android:gravity="right"
-        android:inputType="text"
-        android:text="Add excursion"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/floatingActionButton2"
-        app:layout_constraintHorizontal_bias="0.9"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.97" />
-
-    <Button
-        android:id="@+id/saveButton"
-        android:text="Save" android:layout_height="5dp"/>
-
-    <Button
-        android:id="@+id/deleteButton"
-        android:text="Delete" android:layout_height="5dp"/>
-
-
-
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+

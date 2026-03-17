@@ -36,6 +36,9 @@ public class Excursion {
         this.vacationID = vacationID;
     }
 
+    public Excursion(int excursionID, String string, double v, String excursionDate, String string1, int vacationID) {
+    }
+
     // GETTERS & SETTERS
 
     public int getExcursionId() {

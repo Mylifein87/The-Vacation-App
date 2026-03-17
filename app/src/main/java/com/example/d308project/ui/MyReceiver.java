@@ -22,26 +22,38 @@ public class MyReceiver extends BroadcastReceiver {
     @SuppressLint("NotificationPermission")
     @Override
     public void onReceive(Context context, Intent intent) {
-        // TODO: This method is called when the BroadcastReceiver is receiving
 
         String action = intent.getAction();
         String title = null;
         String contentText = null;
 
         if (action != null) {
+
             switch (action) {
-                case "exc action": //from ExcursionDetails
-                    Toast.makeText(context, intent.getStringExtra("key"), Toast.LENGTH_LONG).show();
+
+                case "exc action": // Excursion alert
+                    Toast.makeText(context,
+                            intent.getStringExtra("key"),
+                            Toast.LENGTH_LONG).show();
+
                     title = "Excursion Alert";
                     contentText = intent.getStringExtra("key");
                     break;
-                case "start action": //from VacationDetails, start date
-                    Toast.makeText(context, intent.getStringExtra("start key"), Toast.LENGTH_LONG).show();
+
+                case "start action": // Vacation start
+                    Toast.makeText(context,
+                            intent.getStringExtra("start key"),
+                            Toast.LENGTH_LONG).show();
+
                     title = "Vacation Start Alert";
                     contentText = intent.getStringExtra("start key");
                     break;
-                case "end action": //from VacationDetails, end date
-                    Toast.makeText(context, intent.getStringExtra("end key"), Toast.LENGTH_LONG).show();
+
+                case "end action": // Vacation end
+                    Toast.makeText(context,
+                            intent.getStringExtra("end key"),
+                            Toast.LENGTH_LONG).show();
+
                     title = "Vacation End Alert";
                     contentText = intent.getStringExtra("end key");
                     break;
@@ -49,30 +61,39 @@ public class MyReceiver extends BroadcastReceiver {
         }
 
         createNotificationChannel(context, channel_id);
-        Notification notification = new NotificationCompat.Builder(context, channel_id)
-                .setSmallIcon(R.drawable.baseline_travel_explore_24)
-                .setContentTitle(title)
-                .setContentText(contentText)
-                .build();
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Notification notification =
+                new NotificationCompat.Builder(context, channel_id)
+                        .setSmallIcon(R.drawable.ic_launcher_foreground)   // REQUIRED
+                        .setContentTitle(title)
+                        .setContentText(contentText)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setAutoCancel(true)
+                        .build();
+
+        NotificationManager notificationManager =
+                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
         notificationManager.notify(notificationID++, notification);
     }
 
     private void createNotificationChannel(Context context, String channel_id) {
-        CharSequence name = "mychannelname";
-        String description = "mychanneldesc";
+
+        CharSequence name = "Vacation Alerts";
+        String description = "Vacation and Excursion Notifications";
         int importance = NotificationManager.IMPORTANCE_DEFAULT;
-        NotificationChannel channel = null;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            channel = new NotificationChannel(channel_id, name, importance);
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            NotificationChannel channel =
+                    new NotificationChannel(channel_id, name, importance);
+
             channel.setDescription(description);
-        }
-        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            NotificationManager notificationManager =
+                    context.getSystemService(NotificationManager.class);
+
             notificationManager.createNotificationChannel(channel);
         }
-
     }
 }
