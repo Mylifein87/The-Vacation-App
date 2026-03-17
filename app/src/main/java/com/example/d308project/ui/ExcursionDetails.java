@@ -74,7 +74,7 @@ public class ExcursionDetails extends AppCompatActivity {
 
         scheduleAlert(
                 date,
-                name + " excursion is today!"
+                name + " excursion is today!!"
         );
 
         Toast.makeText(this,
