@@ -6,8 +6,6 @@ import androidx.room.PrimaryKey;
 import androidx.room.Ignore;
 import androidx.room.ForeignKey;
 
-import static androidx.room.ForeignKey.NO_ACTION;
-
 @Entity(
         tableName = "excursions",
         foreignKeys = @ForeignKey(
@@ -27,8 +25,10 @@ public class Excursion {
     private String excursionName;
     private String excursionDate;
 
+    // Required empty constructor for Room
     public Excursion() {}
 
+    // ✅ Constructor for INSERT
     @Ignore
     public Excursion(String excursionName, String excursionDate, int vacationID) {
         this.excursionName = excursionName;
@@ -36,7 +36,13 @@ public class Excursion {
         this.vacationID = vacationID;
     }
 
-    public Excursion(int excursionID, String string, double v, String excursionDate, String string1, int vacationID) {
+    // ✅ Constructor for UPDATE
+    @Ignore
+    public Excursion(int excursionId, String excursionName, String excursionDate, int vacationID) {
+        this.excursionId = excursionId;
+        this.excursionName = excursionName;
+        this.excursionDate = excursionDate;
+        this.vacationID = vacationID;
     }
 
     // GETTERS & SETTERS
@@ -72,5 +78,4 @@ public class Excursion {
     public void setExcursionDate(String excursionDate) {
         this.excursionDate = excursionDate;
     }
-
 }

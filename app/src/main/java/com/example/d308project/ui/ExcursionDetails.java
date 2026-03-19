@@ -13,6 +13,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.d308project.R;
+import com.example.d308project.database.Repository;
+import com.example.d308project.entities.Excursion;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,6 +25,14 @@ public class ExcursionDetails extends AppCompatActivity {
 
     EditText excursionName;
     Button excursionDate;
+
+    Repository repository;
+
+    int excursionID;
+    int vacationID;
+
+    String vacationStartDate;
+    String vacationEndDate;
 
     String name;
     String date;
@@ -35,17 +45,29 @@ public class ExcursionDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_excursion_details);
 
+        // Repository
+        repository = new Repository(getApplication());
+
+        // UI
         excursionName = findViewById(R.id.editExcursionName);
         excursionDate = findViewById(R.id.buttonExcursionDate);
 
+        Button saveButton = findViewById(R.id.saveExcursionButton);
+        Button deleteButton = findViewById(R.id.deleteExcursionButton);
 
+        // Intent data
+        excursionID = getIntent().getIntExtra("id", -1);
+        vacationID = getIntent().getIntExtra("vacationID", -1);
+        vacationStartDate = getIntent().getStringExtra("start");
+        vacationEndDate = getIntent().getStringExtra("end");
+
+        // DatePicker
         excursionDate.setOnClickListener(v -> {
-
             new DatePickerDialog(
                     ExcursionDetails.this,
                     (view, year, month, dayOfMonth) -> {
 
-                        month++; // month starts at 0
+                        month++;
                         String selectedDate = month + "/" + dayOfMonth + "/" + year;
                         excursionDate.setText(selectedDate);
 
@@ -55,16 +77,84 @@ public class ExcursionDetails extends AppCompatActivity {
                     calendar.get(Calendar.DAY_OF_MONTH)
             ).show();
         });
+
+        // SAVE
+        saveButton.setOnClickListener(v -> {
+
+            name = excursionName.getText().toString();
+            date = excursionDate.getText().toString();
+
+            if (name.isEmpty()) {
+                Toast.makeText(this, "Enter excursion title", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (date.equals("mm/dd/yyyy")) {
+                Toast.makeText(this, "Select a date", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // 🔥 Requirement 5e
+            if (!isDateInRange(date, vacationStartDate, vacationEndDate)) {
+                Toast.makeText(this, "Date must be within vacation dates", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            Excursion excursion;
+
+            if (excursionID == -1) {
+                excursion = new Excursion(name, date, vacationID);
+                repository.insert(excursion);
+            } else {
+                excursion = new Excursion(excursionID, name, date, vacationID);
+                repository.update(excursion);
+            }
+
+            Toast.makeText(this, "Excursion saved", Toast.LENGTH_SHORT).show();
+            finish();
+        });
+
+        // DELETE
+        deleteButton.setOnClickListener(v -> {
+
+            if (excursionID == -1) {
+                finish();
+                return;
+            }
+
+            Excursion excursion = new Excursion(excursionID, name, date, vacationID);
+            repository.delete(excursion);
+
+            Toast.makeText(this, "Excursion deleted", Toast.LENGTH_SHORT).show();
+            finish();
+        });
     }
 
+    // 🔥 Date validation (Requirement 5e)
+    private boolean isDateInRange(String date, String start, String end) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+
+            Date d = sdf.parse(date);
+            Date s = sdf.parse(start);
+            Date e = sdf.parse(end);
+
+            return !d.before(s) && !d.after(e);
+
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // 🔔 Alert
     private void scheduleAlert(String date, String message) {
 
         try {
-
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
             Date alertDate = sdf.parse(date);
 
             Intent intent = new Intent(ExcursionDetails.this, MyReceiver.class);
+            intent.setAction("exc action");
             intent.putExtra("key", message);
 
             PendingIntent sender = PendingIntent.getBroadcast(
@@ -77,11 +167,7 @@ public class ExcursionDetails extends AppCompatActivity {
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
             if (alarmManager != null && alertDate != null) {
-                alarmManager.set(
-                        AlarmManager.RTC_WAKEUP,
-                        alertDate.getTime(),
-                        sender
-                );
+                alarmManager.set(AlarmManager.RTC_WAKEUP, alertDate.getTime(), sender);
             }
 
         } catch (Exception e) {
@@ -94,24 +180,13 @@ public class ExcursionDetails extends AppCompatActivity {
         name = excursionName.getText().toString();
         date = excursionDate.getText().toString();
 
-        // Basic validation
-        if (name.isEmpty()) {
-            Toast.makeText(this, "Please enter excursion title", Toast.LENGTH_SHORT).show();
+        if (name.isEmpty() || date.equals("mm/dd/yyyy")) {
+            Toast.makeText(this, "Enter valid excursion data", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (date.equals("mm/dd/yyyy")) {
-            Toast.makeText(this, "Please select a date", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        scheduleAlert(date, name + " excursion is today!");
 
-        scheduleAlert(
-                date,
-                name + " excursion is today!"
-        );
-
-        Toast.makeText(this,
-                "Excursion alert set",
-                Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Excursion alert set", Toast.LENGTH_LONG).show();
     }
 }
