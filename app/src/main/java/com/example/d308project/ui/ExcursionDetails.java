@@ -1,6 +1,7 @@
 package com.example.d308project.ui;
 
 import android.app.AlarmManager;
+import android.app.DatePickerDialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.d308project.R;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -25,6 +27,8 @@ public class ExcursionDetails extends AppCompatActivity {
     String name;
     String date;
 
+    final Calendar calendar = Calendar.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -33,6 +37,24 @@ public class ExcursionDetails extends AppCompatActivity {
 
         excursionName = findViewById(R.id.editExcursionName);
         excursionDate = findViewById(R.id.buttonExcursionDate);
+
+
+        excursionDate.setOnClickListener(v -> {
+
+            new DatePickerDialog(
+                    ExcursionDetails.this,
+                    (view, year, month, dayOfMonth) -> {
+
+                        month++; // month starts at 0
+                        String selectedDate = month + "/" + dayOfMonth + "/" + year;
+                        excursionDate.setText(selectedDate);
+
+                    },
+                    calendar.get(Calendar.YEAR),
+                    calendar.get(Calendar.MONTH),
+                    calendar.get(Calendar.DAY_OF_MONTH)
+            ).show();
+        });
     }
 
     private void scheduleAlert(String date, String message) {
@@ -72,9 +94,20 @@ public class ExcursionDetails extends AppCompatActivity {
         name = excursionName.getText().toString();
         date = excursionDate.getText().toString();
 
+        // Basic validation
+        if (name.isEmpty()) {
+            Toast.makeText(this, "Please enter excursion title", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (date.equals("mm/dd/yyyy")) {
+            Toast.makeText(this, "Please select a date", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         scheduleAlert(
                 date,
-                name + " excursion is today!!"
+                name + " excursion is today!"
         );
 
         Toast.makeText(this,
