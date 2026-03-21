@@ -34,9 +34,6 @@ public class ExcursionDetails extends AppCompatActivity {
     String vacationStartDate;
     String vacationEndDate;
 
-    String name;
-    String date;
-
     final Calendar calendar = Calendar.getInstance();
 
     @Override
@@ -45,32 +42,27 @@ public class ExcursionDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_excursion_details);
 
-        // Repository
         repository = new Repository(getApplication());
 
-        // UI
         excursionName = findViewById(R.id.editExcursionName);
         excursionDate = findViewById(R.id.buttonExcursionDate);
 
         Button saveButton = findViewById(R.id.saveExcursionButton);
         Button deleteButton = findViewById(R.id.deleteExcursionButton);
 
-        // Intent data
         excursionID = getIntent().getIntExtra("id", -1);
         vacationID = getIntent().getIntExtra("vacationID", -1);
         vacationStartDate = getIntent().getStringExtra("start");
         vacationEndDate = getIntent().getStringExtra("end");
 
-        // DatePicker
+        // 📅 Date Picker
         excursionDate.setOnClickListener(v -> {
             new DatePickerDialog(
                     ExcursionDetails.this,
                     (view, year, month, dayOfMonth) -> {
-
                         month++;
                         String selectedDate = month + "/" + dayOfMonth + "/" + year;
                         excursionDate.setText(selectedDate);
-
                     },
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH),
@@ -78,11 +70,11 @@ public class ExcursionDetails extends AppCompatActivity {
             ).show();
         });
 
-        // SAVE
+        // 💾 SAVE
         saveButton.setOnClickListener(v -> {
 
-            name = excursionName.getText().toString();
-            date = excursionDate.getText().toString();
+            String name = excursionName.getText().toString();
+            String date = excursionDate.getText().toString();
 
             if (name.isEmpty()) {
                 Toast.makeText(this, "Enter excursion title", Toast.LENGTH_SHORT).show();
@@ -94,27 +86,26 @@ public class ExcursionDetails extends AppCompatActivity {
                 return;
             }
 
-            // 🔥 Requirement 5e
+            // ✅ Requirement 5e (date inside vacation)
             if (!isDateInRange(date, vacationStartDate, vacationEndDate)) {
                 Toast.makeText(this, "Date must be within vacation dates", Toast.LENGTH_LONG).show();
                 return;
             }
 
-            Excursion excursion;
+            Excursion excursion = new Excursion(name, date, vacationID);
 
-            if (excursionID == -1) {
-                excursion = new Excursion(name, date, vacationID);
-                repository.insert(excursion);
-            } else {
-                excursion = new Excursion(excursionID, name, date, vacationID);
+            if (excursionID != -1) {
+                excursion.setExcursionId(excursionID);
                 repository.update(excursion);
+            } else {
+                repository.insert(excursion);
             }
 
             Toast.makeText(this, "Excursion saved", Toast.LENGTH_SHORT).show();
             finish();
         });
 
-        // DELETE
+        // 🗑 DELETE
         deleteButton.setOnClickListener(v -> {
 
             if (excursionID == -1) {
@@ -122,7 +113,12 @@ public class ExcursionDetails extends AppCompatActivity {
                 return;
             }
 
-            Excursion excursion = new Excursion(excursionID, name, date, vacationID);
+            String name = excursionName.getText().toString();
+            String date = excursionDate.getText().toString();
+
+            Excursion excursion = new Excursion(name, date, vacationID);
+            excursion.setExcursionId(excursionID);
+
             repository.delete(excursion);
 
             Toast.makeText(this, "Excursion deleted", Toast.LENGTH_SHORT).show();
@@ -130,7 +126,7 @@ public class ExcursionDetails extends AppCompatActivity {
         });
     }
 
-    // 🔥 Date validation (Requirement 5e)
+    // ✅ Requirement 5e validation
     private boolean isDateInRange(String date, String start, String end) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
@@ -177,8 +173,8 @@ public class ExcursionDetails extends AppCompatActivity {
 
     public void setExcursionAlert() {
 
-        name = excursionName.getText().toString();
-        date = excursionDate.getText().toString();
+        String name = excursionName.getText().toString();
+        String date = excursionDate.getText().toString();
 
         if (name.isEmpty() || date.equals("mm/dd/yyyy")) {
             Toast.makeText(this, "Enter valid excursion data", Toast.LENGTH_SHORT).show();
