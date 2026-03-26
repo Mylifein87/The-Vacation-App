@@ -36,16 +36,14 @@ public class MainActivity extends AppCompatActivity {
 
 
         VideoView videoView = findViewById(R.id.videoView);
-        Uri videoUri = Uri.parse(
-                "android.resource://" +getPackageName()+ "/" + R.raw.chicago
-        );
-        videoView.setVideoURI(videoUri);
-        videoView.start();
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
+        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.chicago);
+        videoView.setVideoURI(videoUri);
+
+// Ensure video is ready before starting
+        videoView.setOnPreparedListener(mp -> {
+            mp.setLooping(true); // optional loop
+            videoView.start();
         });
     }
 }

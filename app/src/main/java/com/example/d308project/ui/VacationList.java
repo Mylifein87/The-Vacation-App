@@ -23,6 +23,7 @@ public class VacationList extends AppCompatActivity {
 
     private Repository repository;
     private VacationAdapter vacationAdapter;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,20 +34,16 @@ public class VacationList extends AppCompatActivity {
 
         repository = new Repository(getApplication());
 
-        RecyclerView recyclerView = findViewById(R.id.vacationRecyclerView);
+        recyclerView = findViewById(R.id.vacationRecyclerView);
 
         vacationAdapter = new VacationAdapter(this);
         recyclerView.setAdapter(vacationAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        List<Vacation> vacations = repository.getmALLVacations();
-        vacationAdapter.setVacations(vacations);
-
         FloatingActionButton floatingActionButton =
                 findViewById(R.id.floatingActionButton);
 
         floatingActionButton.setOnClickListener(view -> {
-
             Intent intent = new Intent(VacationList.this, VacationDetails.class);
             startActivity(intent);
         });
@@ -69,6 +66,20 @@ public class VacationList extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        // ---- NAVIGATION BUTTONS ----
+        if (item.getItemId() == R.id.nav_home) {
+            Intent intent = new Intent(VacationList.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+        }
+
+        if (item.getItemId() == R.id.nav_backarrow) {
+            finish(); // back to previous screen
+            return true;
+        }
+
+        // ---- EXISTING SAMPLE DATA MENU ITEM ----
         if (item.getItemId() == R.id.sample) {
 
             Vacation v1 = new Vacation(
@@ -104,13 +115,11 @@ public class VacationList extends AppCompatActivity {
             for (Vacation vacation : repository.getmALLVacations()) {
 
                 if (vacation.getTitle().equals("Bermuda Trip")) {
-
                     repository.insert(new Excursion(
                             "Snorkeling",
                             "06/03/2026",
                             vacation.getVacationID()
                     ));
-
                     repository.insert(new Excursion(
                             "Hiking",
                             "06/05/2026",
@@ -119,13 +128,11 @@ public class VacationList extends AppCompatActivity {
                 }
 
                 if (vacation.getTitle().equals("London Trip")) {
-
                     repository.insert(new Excursion(
                             "Bus Tour",
                             "07/18/2026",
                             vacation.getVacationID()
                     ));
-
                     repository.insert(new Excursion(
                             "Cooking Lesson",
                             "07/20/2026",

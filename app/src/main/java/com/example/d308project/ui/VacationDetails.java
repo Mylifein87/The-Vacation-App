@@ -6,12 +6,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -28,7 +25,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class VacationDetails extends AppCompatActivity {
 
@@ -129,7 +130,6 @@ public class VacationDetails extends AppCompatActivity {
         }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH)).show();
     }
 
-    // ✅ DATE VALIDATION (Requirement 3c + 3d)
     private boolean validateDates() {
         try {
             Date start = sdf.parse(vacationStartDate);
@@ -169,6 +169,20 @@ public class VacationDetails extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        // ---- NAVIGATION BUTTONS ----
+        if (item.getItemId() == R.id.nav_home) {
+            Intent intent = new Intent(VacationDetails.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+        }
+
+        if (item.getItemId() == R.id.nav_backarrow) {
+            finish(); // back to previous screen
+            return true;
+        }
+
+        // ---- EXISTING MENU ITEMS ----
         if (item.getItemId() == R.id.vacationsave) {
 
             if (!validateFields() || !validateDates()) return true;
@@ -258,7 +272,7 @@ public class VacationDetails extends AppCompatActivity {
                 alarmManager.set(AlarmManager.RTC_WAKEUP, alertDate.getTime(), sender);
             }
 
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

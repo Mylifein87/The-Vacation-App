@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -55,7 +57,6 @@ public class ExcursionDetails extends AppCompatActivity {
         vacationStartDate = getIntent().getStringExtra("start");
         vacationEndDate = getIntent().getStringExtra("end");
 
-        // 📅 Date Picker
         excursionDate.setOnClickListener(v -> {
             new DatePickerDialog(
                     ExcursionDetails.this,
@@ -70,63 +71,60 @@ public class ExcursionDetails extends AppCompatActivity {
             ).show();
         });
 
-        // 💾 SAVE
-        saveButton.setOnClickListener(v -> {
-
-            String name = excursionName.getText().toString();
-            String date = excursionDate.getText().toString();
-
-            if (name.isEmpty()) {
-                Toast.makeText(this, "Enter excursion title", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (date.equals("mm/dd/yyyy")) {
-                Toast.makeText(this, "Select a date", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            // ✅ Requirement 5e (date inside vacation)
-            if (!isDateInRange(date, vacationStartDate, vacationEndDate)) {
-                Toast.makeText(this, "Date must be within vacation dates", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            Excursion excursion = new Excursion(name, date, vacationID);
-
-            if (excursionID != -1) {
-                excursion.setExcursionId(excursionID);
-                repository.update(excursion);
-            } else {
-                repository.insert(excursion);
-            }
-
-            Toast.makeText(this, "Excursion saved", Toast.LENGTH_SHORT).show();
-            finish();
-        });
-
-        // 🗑 DELETE
-        deleteButton.setOnClickListener(v -> {
-
-            if (excursionID == -1) {
-                finish();
-                return;
-            }
-
-            String name = excursionName.getText().toString();
-            String date = excursionDate.getText().toString();
-
-            Excursion excursion = new Excursion(name, date, vacationID);
-            excursion.setExcursionId(excursionID);
-
-            repository.delete(excursion);
-
-            Toast.makeText(this, "Excursion deleted", Toast.LENGTH_SHORT).show();
-            finish();
-        });
+        saveButton.setOnClickListener(v -> saveExcursion());
+        deleteButton.setOnClickListener(v -> deleteExcursion());
     }
 
-    // ✅ Requirement 5e validation
+    private void saveExcursion() {
+        String name = excursionName.getText().toString();
+        String date = excursionDate.getText().toString();
+
+        if (name.isEmpty()) {
+            Toast.makeText(this, "Enter excursion title", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (date.equals("mm/dd/yyyy")) {
+            Toast.makeText(this, "Select a date", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!isDateInRange(date, vacationStartDate, vacationEndDate)) {
+            Toast.makeText(this, "Date must be within vacation dates", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        Excursion excursion = new Excursion(name, date, vacationID);
+
+        if (excursionID != -1) {
+            excursion.setExcursionId(excursionID);
+            repository.update(excursion);
+        } else {
+            repository.insert(excursion);
+        }
+
+        Toast.makeText(this, "Excursion saved", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    private void deleteExcursion() {
+        if (excursionID == -1) {
+            finish();
+            return;
+        }
+
+        String name = excursionName.getText().toString();
+        String date = excursionDate.getText().toString();
+
+        Excursion excursion = new Excursion(name, date, vacationID);
+        excursion.setExcursionId(excursionID);
+
+        repository.delete(excursion);
+
+        Toast.makeText(this, "Excursion deleted", Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
     private boolean isDateInRange(String date, String start, String end) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
@@ -142,7 +140,6 @@ public class ExcursionDetails extends AppCompatActivity {
         }
     }
 
-    // 🔔 Alert
     private void scheduleAlert(String date, String message) {
 
         try {
@@ -172,7 +169,6 @@ public class ExcursionDetails extends AppCompatActivity {
     }
 
     public void setExcursionAlert() {
-
         String name = excursionName.getText().toString();
         String date = excursionDate.getText().toString();
 
@@ -184,5 +180,30 @@ public class ExcursionDetails extends AppCompatActivity {
         scheduleAlert(date, name + " excursion is today!");
 
         Toast.makeText(this, "Excursion alert set", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_excursion_details, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        // ---- NAVIGATION BUTTONS ----
+        if (item.getItemId() == R.id.nav_home) {
+            Intent intent = new Intent(ExcursionDetails.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return true;
+        }
+
+        if (item.getItemId() == R.id.nav_backarrow) {
+            finish(); // back to previous screen
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

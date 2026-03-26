@@ -1,9 +1,14 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
+    <!-- Base theme -->
     <style name="Base.Theme.D308Project" parent="Theme.Material3.DayNight">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <!-- Customize your theme here -->
+        <!-- Example:
+        <item name="colorPrimary">@color/purple_500</item>
+        -->
     </style>
 
+    <!-- App theme -->
     <style name="Theme.D308Project" parent="Base.Theme.D308Project" />
+
 </resources>

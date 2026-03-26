@@ -9,6 +9,7 @@
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,10 +18,11 @@
         <LinearLayout
             android:id="@+id/excursionLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="20dp"
-            android:background="#9FA8DA">
+            android:background="#9FA8DA"
+            android:gravity="center">
 
             <!-- Title -->
             <LinearLayout
@@ -83,10 +85,20 @@
                     android:layout_weight="1"
                     android:text="Delete"
                     android:layout_marginStart="10dp"/>
+
+                <com.google.android.material.bottomnavigation.BottomNavigationView
+                    android:id="@+id/bottomNavigationView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?android:attr/windowBackground"
+                    app:menu="@menu/navigation"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
             </LinearLayout>
 
         </LinearLayout>
 
     </ScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
