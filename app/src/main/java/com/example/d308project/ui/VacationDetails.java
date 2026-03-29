@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -31,6 +32,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
 public class VacationDetails extends AppCompatActivity {
 
     Repository repository;
@@ -45,7 +50,7 @@ public class VacationDetails extends AppCompatActivity {
     final Calendar vStartCalendar = Calendar.getInstance();
     final Calendar vEndCalendar = Calendar.getInstance();
 
-    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy", Locale.US);
+    SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +58,14 @@ public class VacationDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_vacation_details);
+
+        View main = findViewById(R.id.main);
+
+        ViewCompat.setOnApplyWindowInsetsListener(main, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
         editVacationName = findViewById(R.id.textNameId);
         editVacationPrice = findViewById(R.id.textPriceId);

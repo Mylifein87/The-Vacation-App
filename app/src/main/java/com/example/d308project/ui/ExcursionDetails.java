@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,6 +23,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 public class ExcursionDetails extends AppCompatActivity {
 
@@ -44,6 +50,18 @@ public class ExcursionDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_excursion_details);
 
+
+
+        View main = findViewById(R.id.main);
+
+        ViewCompat.setOnApplyWindowInsetsListener(main, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+
+
         repository = new Repository(getApplication());
 
         excursionName = findViewById(R.id.editExcursionName);
@@ -62,8 +80,12 @@ public class ExcursionDetails extends AppCompatActivity {
                     ExcursionDetails.this,
                     (view, year, month, dayOfMonth) -> {
                         month++;
-                        String selectedDate = month + "/" + dayOfMonth + "/" + year;
-                        excursionDate.setText(selectedDate);
+                        String formatted = String.format(Locale.US,
+                                "%02d/%02d/%04d",
+                                month + 1,
+                                dayOfMonth,
+                                year);
+                        excursionDate.setText(formatted);
                     },
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH),

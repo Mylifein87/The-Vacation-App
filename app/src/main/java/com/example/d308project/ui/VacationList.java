@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -15,9 +16,14 @@ import com.example.d308project.R;
 import com.example.d308project.database.Repository;
 import com.example.d308project.entities.Excursion;
 import com.example.d308project.entities.Vacation;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
+
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 public class VacationList extends AppCompatActivity {
 
@@ -31,6 +37,22 @@ public class VacationList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_vacation_list);
+
+        View main = findViewById(R.id.main);
+
+        ViewCompat.setOnApplyWindowInsetsListener(main, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
+
+
 
         repository = new Repository(getApplication());
 
@@ -47,6 +69,28 @@ public class VacationList extends AppCompatActivity {
             Intent intent = new Intent(VacationList.this, VacationDetails.class);
             startActivity(intent);
         });
+
+        // ✅ Bottom Navigation Handler
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
+
+        bottomNav.setOnItemSelectedListener(item -> {
+
+            if (item.getItemId() == R.id.nav_home) {
+                Intent intent = new Intent(VacationList.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                return true;
+            }
+
+
+
+            if (item.getItemId() == R.id.nav_backarrow) {
+                finish();
+                return true;
+            }
+
+            return false;
+        });
     }
 
     @Override
@@ -57,6 +101,7 @@ public class VacationList extends AppCompatActivity {
         vacationAdapter.setVacations(vacations);
     }
 
+    // ✅ TOP MENU (separate from bottom nav)
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_vacation_list, menu);
@@ -66,20 +111,7 @@ public class VacationList extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        // ---- NAVIGATION BUTTONS ----
-        if (item.getItemId() == R.id.nav_home) {
-            Intent intent = new Intent(VacationList.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            return true;
-        }
-
-        if (item.getItemId() == R.id.nav_backarrow) {
-            finish(); // back to previous screen
-            return true;
-        }
-
-        // ---- EXISTING SAMPLE DATA MENU ITEM ----
+        // ✅ ONLY sample logic here now
         if (item.getItemId() == R.id.sample) {
 
             Vacation v1 = new Vacation(

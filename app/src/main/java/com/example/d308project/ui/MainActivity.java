@@ -23,26 +23,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
+        // ✅ HIDE THE TOP BAR (FIXES VIDEO CUTTING ISSUE)
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
+
         Button button = findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this, com.example.d308project.ui.VacationList.class);
+                Intent intent = new Intent(MainActivity.this, VacationList.class);
                 startActivity(intent);
             }
         });
-
-
 
         VideoView videoView = findViewById(R.id.videoView);
 
         Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.chicago);
         videoView.setVideoURI(videoUri);
 
-// Ensure video is ready before starting
         videoView.setOnPreparedListener(mp -> {
-            mp.setLooping(true); // optional loop
+            mp.setLooping(true);
             videoView.start();
         });
     }
