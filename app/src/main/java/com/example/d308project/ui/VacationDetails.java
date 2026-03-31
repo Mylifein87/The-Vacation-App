@@ -24,7 +24,6 @@ import com.example.d308project.entities.Excursion;
 import com.example.d308project.entities.Vacation;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,7 +45,6 @@ public class VacationDetails extends AppCompatActivity {
 
     Button buttonVacationDateStart, buttonVacationDateEnd;
 
-    DatePickerDialog.OnDateSetListener vStartDate, vEndDate;
     final Calendar vStartCalendar = Calendar.getInstance();
     final Calendar vEndCalendar = Calendar.getInstance();
 
@@ -66,6 +64,8 @@ public class VacationDetails extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        repository = new Repository(getApplication());
 
         editVacationName = findViewById(R.id.textNameId);
         editVacationPrice = findViewById(R.id.textPriceId);
@@ -106,10 +106,7 @@ public class VacationDetails extends AppCompatActivity {
         });
 
         RecyclerView recyclerView = findViewById(R.id.excursionRecyclerView);
-        repository = new Repository(getApplication());
-
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ExcursionAdapter adapter = new ExcursionAdapter(this);
 
         List<Excursion> filtered = new ArrayList<>();
         for (Excursion e : repository.getmAllExcursions()) {
@@ -118,24 +115,25 @@ public class VacationDetails extends AppCompatActivity {
             }
         }
 
+        ExcursionAdapter adapter = new ExcursionAdapter(this);
         adapter.setExcursions(filtered);
         recyclerView.setAdapter(adapter);
     }
 
+    // ✅ FIXED DATE PICKER (NO MONTH BUG HERE)
     private void showDatePicker(boolean isStart) {
         Calendar cal = isStart ? vStartCalendar : vEndCalendar;
 
         new DatePickerDialog(this, (view, year, month, day) -> {
+
             cal.set(year, month, day);
 
             String formatted = sdf.format(cal.getTime());
 
             if (isStart) {
-                vStartCalendar.setTime(cal.getTime());
                 vacationStartDate = formatted;
                 buttonVacationDateStart.setText(formatted);
             } else {
-                vEndCalendar.setTime(cal.getTime());
                 vacationEndDate = formatted;
                 buttonVacationDateEnd.setText(formatted);
             }
@@ -182,20 +180,16 @@ public class VacationDetails extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        // ---- NAVIGATION BUTTONS ----
         if (item.getItemId() == R.id.nav_home) {
-            Intent intent = new Intent(VacationDetails.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            startActivity(new Intent(this, MainActivity.class));
             return true;
         }
 
         if (item.getItemId() == R.id.nav_backarrow) {
-            finish(); // back to previous screen
+            finish();
             return true;
         }
 
-        // ---- EXISTING MENU ITEMS ----
         if (item.getItemId() == R.id.vacationsave) {
 
             if (!validateFields() || !validateDates()) return true;
@@ -222,71 +216,18 @@ public class VacationDetails extends AppCompatActivity {
                 return true;
             }
 
-            Vacation vacation = new Vacation(
+            repository.delete(new Vacation(
                     vacationID,
                     editVacationName.getText().toString(),
                     Double.parseDouble(editVacationPrice.getText().toString()),
                     editVacationHotel.getText().toString(),
                     vacationStartDate,
                     vacationEndDate
-            );
+            ));
 
-            repository.delete(vacation);
             finish();
         }
 
-        if (item.getItemId() == R.id.vacationshare) {
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("text/plain");
-
-            String text = "Vacation: " + editVacationName.getText()
-                    + "\nHotel: " + editVacationHotel.getText()
-                    + "\nStart: " + vacationStartDate
-                    + "\nEnd: " + vacationEndDate;
-
-            intent.putExtra(Intent.EXTRA_TEXT, text);
-            startActivity(Intent.createChooser(intent, "Share Vacation"));
-        }
-
-        if (item.getItemId() == R.id.vacationstartalert) {
-            scheduleAlert(vacationStartDate, editVacationName.getText().toString() + " starts today!", "start action");
-        }
-
-        if (item.getItemId() == R.id.vacationendalert) {
-            scheduleAlert(vacationEndDate, editVacationName.getText().toString() + " ends today!", "end action");
-        }
-
         return true;
-    }
-
-    private void scheduleAlert(String date, String message, String action) {
-        try {
-            Date alertDate = sdf.parse(date);
-
-            Intent intent = new Intent(this, MyReceiver.class);
-            intent.setAction(action);
-
-            if (action.equals("start action")) {
-                intent.putExtra("start key", message);
-            } else {
-                intent.putExtra("end key", message);
-            }
-
-            PendingIntent sender = PendingIntent.getBroadcast(
-                    this,
-                    MainActivity.numAlert++,
-                    intent,
-                    PendingIntent.FLAG_IMMUTABLE
-            );
-
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
-            if (alarmManager != null && alertDate != null) {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, alertDate.getTime(), sender);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

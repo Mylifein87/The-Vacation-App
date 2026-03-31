@@ -18,12 +18,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.d308project.R;
 import com.example.d308project.database.Repository;
 import com.example.d308project.entities.Excursion;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
-
 
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -50,17 +50,13 @@ public class ExcursionDetails extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_excursion_details);
 
-
-
+        // ✅ Edge-to-edge fix
         View main = findViewById(R.id.main);
-
         ViewCompat.setOnApplyWindowInsetsListener(main, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
-
-
 
         repository = new Repository(getApplication());
 
@@ -75,16 +71,18 @@ public class ExcursionDetails extends AppCompatActivity {
         vacationStartDate = getIntent().getStringExtra("start");
         vacationEndDate = getIntent().getStringExtra("end");
 
+        // ✅ FIXED DATE PICKER (no month bug)
         excursionDate.setOnClickListener(v -> {
             new DatePickerDialog(
                     ExcursionDetails.this,
                     (view, year, month, dayOfMonth) -> {
-                        month++;
-                        String formatted = String.format(Locale.US,
-                                "%02d/%02d/%04d",
-                                month + 1,
-                                dayOfMonth,
-                                year);
+
+                        Calendar selectedCal = Calendar.getInstance();
+                        selectedCal.set(year, month, dayOfMonth);
+
+                        SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
+                        String formatted = sdf.format(selectedCal.getTime());
+
                         excursionDate.setText(formatted);
                     },
                     calendar.get(Calendar.YEAR),
@@ -95,6 +93,26 @@ public class ExcursionDetails extends AppCompatActivity {
 
         saveButton.setOnClickListener(v -> saveExcursion());
         deleteButton.setOnClickListener(v -> deleteExcursion());
+
+        // ✅ ✅ THIS IS THE MISSING PIECE (BOTTOM NAV FIX)
+        BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
+
+        bottomNav.setOnItemSelectedListener(item -> {
+
+            if (item.getItemId() == R.id.nav_home) {
+                Intent intent = new Intent(ExcursionDetails.this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                return true;
+            }
+
+            if (item.getItemId() == R.id.nav_backarrow) {
+                finish();
+                return true;
+            }
+
+            return false;
+        });
     }
 
     private void saveExcursion() {
@@ -200,7 +218,6 @@ public class ExcursionDetails extends AppCompatActivity {
         }
 
         scheduleAlert(date, name + " excursion is today!");
-
         Toast.makeText(this, "Excursion alert set", Toast.LENGTH_LONG).show();
     }
 
@@ -213,16 +230,14 @@ public class ExcursionDetails extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        // ---- NAVIGATION BUTTONS ----
+        // (Top menu - optional fallback)
         if (item.getItemId() == R.id.nav_home) {
-            Intent intent = new Intent(ExcursionDetails.this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            startActivity(new Intent(this, MainActivity.class));
             return true;
         }
 
         if (item.getItemId() == R.id.nav_backarrow) {
-            finish(); // back to previous screen
+            finish();
             return true;
         }
 
