@@ -64,7 +64,7 @@ public class MyReceiver extends BroadcastReceiver {
 
         Notification notification =
                 new NotificationCompat.Builder(context, channel_id)
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)   // REQUIRED
+                        .setSmallIcon(R.drawable.ic_launcher_foreground)
                         .setContentTitle(title)
                         .setContentText(contentText)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)

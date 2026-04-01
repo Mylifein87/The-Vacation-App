@@ -70,7 +70,7 @@ public class VacationList extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // ✅ Bottom Navigation Handler
+
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
 
         bottomNav.setOnItemSelectedListener(item -> {
@@ -101,7 +101,7 @@ public class VacationList extends AppCompatActivity {
         vacationAdapter.setVacations(vacations);
     }
 
-    // ✅ TOP MENU (separate from bottom nav)
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_vacation_list, menu);

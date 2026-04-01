@@ -19,7 +19,7 @@ import java.util.List;
 public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.ProductViewHolder> {
 
     private List<Vacation> mVacations;
-    private final Context context; //declare context bc not in an activity, get from inflater
+    private final Context context;
     private final LayoutInflater mInflater;
 
     public VacationAdapter(Context context) { //inflates list item layout
@@ -83,7 +83,7 @@ public class VacationAdapter extends RecyclerView.Adapter<VacationAdapter.Produc
         if (mVacations != null) {
             return mVacations.size();
         } else
-            return 0; //app won't crash if there isn't anything
+            return 0;
     }
 
     public void setVacations(List<Vacation> vacations) { //set vacations on recyclerview from activity housing it

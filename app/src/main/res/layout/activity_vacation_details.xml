@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     tools:context=".ui.VacationDetails">
 
-    <!-- Top Scroll Section -->
+
     <ScrollView
         android:id="@+id/scrollview1"
         android:layout_width="0dp"
@@ -158,7 +158,7 @@
         app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- ✅ FIXED Bottom Navigation -->
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"
         android:layout_width="0dp"

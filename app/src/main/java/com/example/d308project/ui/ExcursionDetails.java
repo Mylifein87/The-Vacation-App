@@ -94,7 +94,7 @@ public class ExcursionDetails extends AppCompatActivity {
         saveButton.setOnClickListener(v -> saveExcursion());
         deleteButton.setOnClickListener(v -> deleteExcursion());
 
-        // ✅ ✅ THIS IS THE MISSING PIECE (BOTTOM NAV FIX)
+        // ✅ Bottom Navigation FIX
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
 
         bottomNav.setOnItemSelectedListener(item -> {
@@ -143,7 +143,10 @@ public class ExcursionDetails extends AppCompatActivity {
             repository.insert(excursion);
         }
 
-        Toast.makeText(this, "Excursion saved", Toast.LENGTH_SHORT).show();
+        // ✅ REQUIRED FEATURE: ALERT SET HERE
+        scheduleAlert(date, name + " excursion is today!");
+
+        Toast.makeText(this, "Excursion saved & alert set", Toast.LENGTH_SHORT).show();
         finish();
     }
 
@@ -186,6 +189,13 @@ public class ExcursionDetails extends AppCompatActivity {
             SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.US);
             Date alertDate = sdf.parse(date);
 
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(alertDate);
+            cal.set(Calendar.HOUR_OF_DAY, 9);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+
             Intent intent = new Intent(ExcursionDetails.this, MyReceiver.class);
             intent.setAction("exc action");
             intent.putExtra("key", message);
@@ -199,8 +209,12 @@ public class ExcursionDetails extends AppCompatActivity {
 
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
-            if (alarmManager != null && alertDate != null) {
-                alarmManager.set(AlarmManager.RTC_WAKEUP, alertDate.getTime(), sender);
+            if (alarmManager != null) {
+                alarmManager.set(
+                        AlarmManager.RTC_WAKEUP,
+                        cal.getTimeInMillis(),
+                        sender
+                );
             }
 
         } catch (Exception e) {
@@ -230,7 +244,6 @@ public class ExcursionDetails extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        // (Top menu - optional fallback)
         if (item.getItemId() == R.id.nav_home) {
             startActivity(new Intent(this, MainActivity.class));
             return true;
