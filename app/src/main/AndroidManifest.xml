@@ -12,36 +12,49 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.D308Project">
 
-        <!-- ✅ ADD THIS -->
+        <!-- ✅ ALERT RECEIVER -->
         <receiver
             android:name=".ui.MyReceiver"
-            android:exported="false"/>
-
-        <activity
-            android:name=".ui.ExcursionDetails"
             android:exported="false" />
 
+        <!-- ✅ LOGIN (NEW LAUNCH SCREEN) -->
         <activity
-            android:name="com.example.d308project.ui.VacationDetails"
-            android:exported="false"
-            android:label="Vacation Details and Excursions List"
-            android:parentActivityName="com.example.d308project.ui.VacationList" />
-
-        <activity
-            android:name="com.example.d308project.ui.VacationList"
-            android:exported="false"
-            android:label="Vacation List"
-            android:parentActivityName="com.example.d308project.ui.MainActivity" />
-
-        <activity
-            android:name="com.example.d308project.ui.MainActivity"
-            android:exported="true"
-            android:label="Main Activity">
+            android:name=".ui.LoginActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- ✅ EXISTING SCREENS -->
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="false"
+            android:label="Main Activity" />
+
+        <activity
+            android:name=".ui.VacationList"
+            android:exported="false"
+            android:label="Vacation List"
+            android:parentActivityName=".ui.MainActivity" />
+
+        <activity
+            android:name=".ui.VacationDetails"
+            android:exported="false"
+            android:label="Vacation Details and Excursions List"
+            android:parentActivityName=".ui.VacationList" />
+
+        <activity
+            android:name=".ui.ExcursionDetails"
+            android:exported="false" />
+
+        <!-- (Optional) Search screen if you add one -->
+        <!--
+        <activity
+            android:name=".ui.SearchActivity"
+            android:exported="false" />
+        -->
 
         <meta-data
             android:name="preloaded_fonts"
