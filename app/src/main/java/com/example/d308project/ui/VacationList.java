@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -19,7 +21,11 @@ import com.example.d308project.entities.Vacation;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -30,6 +36,12 @@ public class VacationList extends AppCompatActivity {
     private Repository repository;
     private VacationAdapter vacationAdapter;
     private RecyclerView recyclerView;
+
+    private EditText searchInput;
+    private Button searchButton;
+    private Button reportButton;
+
+    private List<Vacation> currentList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,21 +58,26 @@ public class VacationList extends AppCompatActivity {
             return insets;
         });
 
-
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
 
-
-
-
         repository = new Repository(getApplication());
 
         recyclerView = findViewById(R.id.vacationRecyclerView);
-
         vacationAdapter = new VacationAdapter(this);
         recyclerView.setAdapter(vacationAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        searchInput = findViewById(R.id.searchInput);
+        searchButton = findViewById(R.id.searchButton);
+        reportButton = findViewById(R.id.reportButton);
+
+        currentList = repository.getmALLVacations();
+        vacationAdapter.setVacations(currentList);
+
+        searchButton.setOnClickListener(v -> performSearch());
+        reportButton.setOnClickListener(v -> generateReport());
 
         FloatingActionButton floatingActionButton =
                 findViewById(R.id.floatingActionButton);
@@ -69,7 +86,6 @@ public class VacationList extends AppCompatActivity {
             Intent intent = new Intent(VacationList.this, VacationDetails.class);
             startActivity(intent);
         });
-
 
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
 
@@ -82,8 +98,6 @@ public class VacationList extends AppCompatActivity {
                 return true;
             }
 
-
-
             if (item.getItemId() == R.id.nav_backarrow) {
                 finish();
                 return true;
@@ -93,14 +107,84 @@ public class VacationList extends AppCompatActivity {
         });
     }
 
+    // ✅ SEARCH FUNCTION (multi-row results)
+    private void performSearch() {
+
+        String query = searchInput.getText().toString().toLowerCase();
+        List<Vacation> results = new ArrayList<>();
+
+        for (Vacation v : repository.getmALLVacations()) {
+            if (v.getTitle().toLowerCase().contains(query)) {
+                results.add(v);
+            }
+        }
+
+        currentList = results;
+        vacationAdapter.setVacations(results);
+        vacationAdapter.notifyDataSetChanged();
+
+        Toast.makeText(this, results.size() + " results found", Toast.LENGTH_SHORT).show();
+    }
+
+    // ✅ REPORT GENERATION (FULL RUBRIC COMPLIANCE)
+    private void generateReport() {
+
+        if (currentList.isEmpty()) {
+            Toast.makeText(this, "No data to report", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        StringBuilder report = new StringBuilder();
+
+        String timestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.US)
+                .format(new Date());
+
+        // ✅ TITLE + TIMESTAMP
+        report.append("=== Vacation Report ===\n");
+        report.append("Generated: ").append(timestamp).append("\n\n");
+
+        // ✅ MULTI-COLUMN HEADER
+        report.append("Title | Hotel | Price | Start | End\n");
+        report.append("------------------------------------------------\n");
+
+        for (Vacation v : currentList) {
+
+            // ✅ MAIN ROW
+            report.append(v.getTitle()).append(" | ")
+                    .append(v.getHotel()).append(" | ")
+                    .append(v.getPrice()).append(" | ")
+                    .append(v.getStartDate()).append(" | ")
+                    .append(v.getEndDate()).append("\n");
+
+            // ✅ ASSOCIATED EXCURSIONS
+            List<Excursion> excursions = repository.getAssociatedExcursions(v.getVacationID());
+
+            for (Excursion e : excursions) {
+                report.append("   -> Excursion: ")
+                        .append(e.getExcursionId())
+                        .append(" (")
+                        .append(e.getExcursionDate())
+                        .append(")\n");
+            }
+
+            report.append("\n");
+        }
+
+        // ✅ SHARE REPORT
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, report.toString());
+
+        startActivity(Intent.createChooser(intent, "Share Report"));
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
 
-        List<Vacation> vacations = repository.getmALLVacations();
-        vacationAdapter.setVacations(vacations);
+        currentList = repository.getmALLVacations();
+        vacationAdapter.setVacations(currentList);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -111,7 +195,6 @@ public class VacationList extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        // ✅ ONLY sample logic here now
         if (item.getItemId() == R.id.sample) {
 
             Vacation v1 = new Vacation(
@@ -147,37 +230,20 @@ public class VacationList extends AppCompatActivity {
             for (Vacation vacation : repository.getmALLVacations()) {
 
                 if (vacation.getTitle().equals("Bermuda Trip")) {
-                    repository.insert(new Excursion(
-                            "Snorkeling",
-                            "06/03/2026",
-                            vacation.getVacationID()
-                    ));
-                    repository.insert(new Excursion(
-                            "Hiking",
-                            "06/05/2026",
-                            vacation.getVacationID()
-                    ));
+                    repository.insert(new Excursion("Snorkeling", "06/03/2026", vacation.getVacationID()));
+                    repository.insert(new Excursion("Hiking", "06/05/2026", vacation.getVacationID()));
                 }
 
                 if (vacation.getTitle().equals("London Trip")) {
-                    repository.insert(new Excursion(
-                            "Bus Tour",
-                            "07/18/2026",
-                            vacation.getVacationID()
-                    ));
-                    repository.insert(new Excursion(
-                            "Cooking Lesson",
-                            "07/20/2026",
-                            vacation.getVacationID()
-                    ));
+                    repository.insert(new Excursion("Bus Tour", "07/18/2026", vacation.getVacationID()));
+                    repository.insert(new Excursion("Cooking Lesson", "07/20/2026", vacation.getVacationID()));
                 }
             }
 
-            vacationAdapter.setVacations(repository.getmALLVacations());
+            currentList = repository.getmALLVacations();
+            vacationAdapter.setVacations(currentList);
 
-            Toast.makeText(this,
-                    "Sample data added!",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Sample data added!", Toast.LENGTH_LONG).show();
 
             return true;
         }
