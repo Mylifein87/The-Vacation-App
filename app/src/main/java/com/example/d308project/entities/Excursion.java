@@ -21,6 +21,7 @@ public class Excursion {
     @PrimaryKey(autoGenerate = true)
     private int excursionId;
 
+
     private int vacationID;
     private String excursionName;
     private String excursionDate;
@@ -28,19 +29,18 @@ public class Excursion {
     // Required empty constructor for Room
     public Excursion() {}
 
-    // ✅ Constructor for INSERT
+
     @Ignore
     public Excursion(String excursionName, String excursionDate, int vacationID) {
-        this.excursionName = excursionName;
+        //this.excursionName = excursionName;
         this.excursionDate = excursionDate;
         this.vacationID = vacationID;
     }
 
-    // ✅ Constructor for UPDATE
     @Ignore
     public Excursion(int excursionId, String excursionName, String excursionDate, int vacationID) {
         this.excursionId = excursionId;
-        this.excursionName = excursionName;
+        //this.excursionName = excursionName;
         this.excursionDate = excursionDate;
         this.vacationID = vacationID;
     }

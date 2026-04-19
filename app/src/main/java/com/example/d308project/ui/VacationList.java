@@ -73,8 +73,7 @@ public class VacationList extends AppCompatActivity {
         searchButton = findViewById(R.id.searchButton);
         reportButton = findViewById(R.id.reportButton);
 
-        currentList = repository.getmALLVacations();
-        vacationAdapter.setVacations(currentList);
+        loadAllVacations();
 
         searchButton.setOnClickListener(v -> performSearch());
         reportButton.setOnClickListener(v -> generateReport());
@@ -107,10 +106,23 @@ public class VacationList extends AppCompatActivity {
         });
     }
 
-    // ✅ SEARCH FUNCTION (multi-row results)
+
+    private void loadAllVacations() {
+        currentList = repository.getmALLVacations();
+        vacationAdapter.setVacations(currentList);
+    }
+
+
     private void performSearch() {
 
-        String query = searchInput.getText().toString().toLowerCase();
+        String query = searchInput.getText().toString().trim().toLowerCase();
+
+        if (query.isEmpty()) {
+            loadAllVacations();
+            Toast.makeText(this, "Showing all vacations", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         List<Vacation> results = new ArrayList<>();
 
         for (Vacation v : repository.getmALLVacations()) {
@@ -126,7 +138,7 @@ public class VacationList extends AppCompatActivity {
         Toast.makeText(this, results.size() + " results found", Toast.LENGTH_SHORT).show();
     }
 
-    // ✅ REPORT GENERATION (FULL RUBRIC COMPLIANCE)
+
     private void generateReport() {
 
         if (currentList.isEmpty()) {
@@ -139,29 +151,29 @@ public class VacationList extends AppCompatActivity {
         String timestamp = new SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.US)
                 .format(new Date());
 
-        // ✅ TITLE + TIMESTAMP
+        // TITLE + TIMESTAMP
         report.append("=== Vacation Report ===\n");
         report.append("Generated: ").append(timestamp).append("\n\n");
 
-        // ✅ MULTI-COLUMN HEADER
+        // MULTI-COLUMN HEADER
         report.append("Title | Hotel | Price | Start | End\n");
         report.append("------------------------------------------------\n");
 
         for (Vacation v : currentList) {
 
-            // ✅ MAIN ROW
+            // MAIN ROW
             report.append(v.getTitle()).append(" | ")
                     .append(v.getHotel()).append(" | ")
                     .append(v.getPrice()).append(" | ")
                     .append(v.getStartDate()).append(" | ")
                     .append(v.getEndDate()).append("\n");
 
-            // ✅ ASSOCIATED EXCURSIONS
+            // ASSOCIATED EXCURSIONS
             List<Excursion> excursions = repository.getAssociatedExcursions(v.getVacationID());
 
             for (Excursion e : excursions) {
                 report.append("   -> Excursion: ")
-                        .append(e.getExcursionId())
+                        .append(e.getExcursionName())
                         .append(" (")
                         .append(e.getExcursionDate())
                         .append(")\n");
@@ -170,7 +182,7 @@ public class VacationList extends AppCompatActivity {
             report.append("\n");
         }
 
-        // ✅ SHARE REPORT
+        // SHARE REPORT
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");
         intent.putExtra(Intent.EXTRA_TEXT, report.toString());
@@ -181,9 +193,7 @@ public class VacationList extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
-        currentList = repository.getmALLVacations();
-        vacationAdapter.setVacations(currentList);
+        loadAllVacations();
     }
 
     @Override
@@ -197,34 +207,12 @@ public class VacationList extends AppCompatActivity {
 
         if (item.getItemId() == R.id.sample) {
 
-            Vacation v1 = new Vacation(
-                    1,
-                    "Bermuda Trip",
-                    1200.0,
-                    "Hilton Bermuda",
-                    "06/01/2026",
-                    "06/10/2026"
-            );
+            Vacation v1 = new Vacation("Bermuda Trip", 1200.0, "Hilton Bermuda", "06/01/2026", "06/10/2026");
+            Vacation v2 = new Vacation("London Trip", 1800.0, "The Savoy", "07/15/2026", "07/25/2026");
+            Vacation v3 = new Vacation("Spring Break", 900.0, "Miami Beach Resort", "03/10/2026", "03/17/2026");
+
             repository.insert(v1);
-
-            Vacation v2 = new Vacation(
-                    2,
-                    "London Trip",
-                    1800.0,
-                    "The Savoy",
-                    "07/15/2026",
-                    "07/25/2026"
-            );
             repository.insert(v2);
-
-            Vacation v3 = new Vacation(
-                    3,
-                    "Spring Break",
-                    900.0,
-                    "Miami Beach Resort",
-                    "03/10/2026",
-                    "03/17/2026"
-            );
             repository.insert(v3);
 
             for (Vacation vacation : repository.getmALLVacations()) {
@@ -240,11 +228,9 @@ public class VacationList extends AppCompatActivity {
                 }
             }
 
-            currentList = repository.getmALLVacations();
-            vacationAdapter.setVacations(currentList);
+            loadAllVacations();
 
             Toast.makeText(this, "Sample data added!", Toast.LENGTH_LONG).show();
-
             return true;
         }
 

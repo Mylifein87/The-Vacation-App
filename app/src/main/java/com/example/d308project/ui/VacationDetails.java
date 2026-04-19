@@ -100,7 +100,6 @@ public class VacationDetails extends AppCompatActivity {
             startActivity(intent);
         });
 
-
         RecyclerView recyclerView = findViewById(R.id.excursionRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -109,7 +108,6 @@ public class VacationDetails extends AppCompatActivity {
         adapter.setExcursions(filtered);
         recyclerView.setAdapter(adapter);
 
-        // ---------------- ✅ FIX: Bottom Nav ----------------
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavigationView);
 
         bottomNav.setOnItemSelectedListener(item -> {
@@ -129,7 +127,6 @@ public class VacationDetails extends AppCompatActivity {
             return false;
         });
     }
-
 
     private void showDatePicker(boolean isStart) {
         Calendar cal = isStart ? vStartCalendar : vEndCalendar;
@@ -160,6 +157,20 @@ public class VacationDetails extends AppCompatActivity {
         return filtered;
     }
 
+    private boolean validateFields() {
+        if (editVacationName.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Enter vacation name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (editVacationPrice.getText().toString().isEmpty()) {
+            Toast.makeText(this, "Enter price", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_vacation_details, menu);
@@ -171,21 +182,34 @@ public class VacationDetails extends AppCompatActivity {
 
         if (item.getItemId() == R.id.vacationsave) {
 
-            Vacation vacation = new Vacation(
-                    vacationID == -1 ? (int) System.currentTimeMillis() : vacationID,
-                    editVacationName.getText().toString(),
-                    Double.parseDouble(editVacationPrice.getText().toString()),
-                    editVacationHotel.getText().toString(),
-                    vacationStartDate,
-                    vacationEndDate
-            );
+            if (!validateFields()) return true;
 
-            if (vacationID == -1) repository.insert(vacation);
-            else repository.update(vacation);
+            // ✅ FIX: Let Room auto-generate ID
+            Vacation vacation;
+
+            if (vacationID == -1) {
+                vacation = new Vacation(
+                        editVacationName.getText().toString(),
+                        Double.parseDouble(editVacationPrice.getText().toString()),
+                        editVacationHotel.getText().toString(),
+                        vacationStartDate,
+                        vacationEndDate
+                );
+                repository.insert(vacation);
+            } else {
+                vacation = new Vacation(
+                        vacationID,
+                        editVacationName.getText().toString(),
+                        Double.parseDouble(editVacationPrice.getText().toString()),
+                        editVacationHotel.getText().toString(),
+                        vacationStartDate,
+                        vacationEndDate
+                );
+                repository.update(vacation);
+            }
 
             finish();
         }
-
 
         if (item.getItemId() == R.id.vacationshare) {
 
@@ -199,7 +223,7 @@ public class VacationDetails extends AppCompatActivity {
                     .append("\n\nExcursions:\n");
 
             for (Excursion e : excursions) {
-                text.append("- ").append(e.getExcursionName())
+                text.append("- ").append(e.getExcursionId())
                         .append(" (").append(e.getExcursionDate()).append(")\n");
             }
 
@@ -210,12 +234,13 @@ public class VacationDetails extends AppCompatActivity {
             startActivity(Intent.createChooser(intent, "Share Vacation"));
         }
 
-
         if (item.getItemId() == R.id.vacationstartalert) {
 
             for (Excursion e : getExcursions()) {
-                scheduleAlert(e.getExcursionDate(),
-                        e.getExcursionName() + " excursion is today!");
+                scheduleAlert(
+                        e.getExcursionDate(),
+                        e.getExcursionId() + " excursion is today!"
+                );
             }
 
             Toast.makeText(this, "Excursion alerts set", Toast.LENGTH_LONG).show();

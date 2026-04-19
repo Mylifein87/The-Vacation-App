@@ -12,8 +12,8 @@ import com.example.d308project.entities.Vacation;
 import java.util.List;
 
 @Dao
-
 public interface VacationDAO {
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Vacation vacation);
 
@@ -23,9 +23,9 @@ public interface VacationDAO {
     @Delete
     void delete(Vacation vacation);
 
-    @Query("SELECT * FROM VACATIONS WHERE vacationID =:id")
+    @Query("SELECT * FROM vacations WHERE vacationID = :id")
     Vacation getVacationById(int id);
-    @Query("SELECT * FROM VACATIONS ORDER BY vacationID ASC")
 
+    @Query("SELECT * FROM vacations ORDER BY vacationID ASC")
     List<Vacation> getAllVacations();
 }

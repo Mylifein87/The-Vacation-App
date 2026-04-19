@@ -9,7 +9,6 @@ import androidx.room.Update;
 
 import com.example.d308project.entities.Excursion;
 
-
 import java.util.List;
 
 @Dao
